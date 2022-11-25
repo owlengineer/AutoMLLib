@@ -3,6 +3,8 @@ from .BaseModelWrapper import BaseModelWrapper
 from keras.layers import Dense
 from keras import Sequential
 from keras.callbacks import EarlyStopping
+from keras.metrics import Accuracy
+from ..utils import merge_dicts
 
 
 class DumbDenseNet(BaseModelWrapper):
@@ -24,6 +26,17 @@ class DumbDenseNet(BaseModelWrapper):
                       metrics=[self.config['metric_fn']])
         self.model = model
         self.logger.debug(self.summary())
+
+    def _init_config(self, params):
+        """init model config"""
+        self.config = {
+            'metric_fn': Accuracy(),
+            'epochs': 20,
+            'batch_size': 64,
+            'validation_split': 0.2,
+            'input_shape': (100,)
+        }
+        merge_dicts(self.config, params)
 
     def summary(self):
         stringlist = []

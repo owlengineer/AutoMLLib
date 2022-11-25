@@ -1,5 +1,7 @@
 # AutoMLLib
 
+Данная библиотека предоставляет интерфейс для обучения и разработки моделей, для решения задачи бинарной классификации.
+
 ## install (Linux)
 
 Add to your project (Poetry):
@@ -8,7 +10,36 @@ cd <your_project_foldier>
 poetry add git+ssh://git@github.com:owlengineer/AutoMLLib.git
 ```
 
+## Usage
+
+Пример обучения модели DumbDenseNet:
+```python
+from automllib.models.DumbDenseNet import DumbDenseNet
+from keras.metrics import TruePositives
+
+#
+# ... prepare x_train, y_train, x_test, y_test data
+
+# параметры, у каждой модели своя JSON-SCHEMA параметров 
+params = {
+        'metric_fn': TruePositives(),  # функцию можно реализовать самостроятельно или выбрать готовую
+        'epochs': 10,
+        'batch_size': 32,
+        'validation_split': 0.2,
+        'input_shape': (1000,)
+    }
+model = DumbDenseNet(params=params)
+best_model, metric_result = model.get_best_model(x_train, y_train,  
+                                                 x_test, y_test)
+
+```
+Таким образом best_model -- Python-объект модели, а metric_result -- расчет метрики на тестовых данных.
+
 ## Ход мыслей (как делал)
+
+<details>
+  <summary>Expand!</summary>
+<br>
 
 ### Исходная постановка
 
@@ -34,3 +65,4 @@ poetry add git+ssh://git@github.com:owlengineer/AutoMLLib.git
 3. Базовая функция для пользователя -- get_best_model(data), она запускает процесс обучения, возвращает объект модели и расчет метрики. Пользовательские конфиги модели (кол-во эпох, размер батча, метрика и тп) подаются в конструктор как словарь params -- в этом универсальность, но для каждой модели поля могут быть разные. Пример -- если использовать https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html, там параметры будут другие, нежели в реализации через нейронную сеть. 
 4. Данный пункт реализовывается в методе тренировки модели самим разработчиком, поскольку реализация метода тренировки может быть разная (например если цикл обучения спрятан во внешней функции, а callback-ов как в keras-e нет)
 5. Реализация подразумевает, что для каждой модели будет проводиться 2 теста -- на успешную сборку и успешное обучение. Для модели-примера на Dense слоях это сделано. Использовался pytest.
+</details>
