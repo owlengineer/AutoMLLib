@@ -2,7 +2,7 @@
 
 ## install (Linux)
 
-Poetry:
+Add to your project (Poetry):
 ```commandline
 cd <your_project_foldier>
 poetry add git+ssh://git@github.com:owlengineer/AutoMLLib.git

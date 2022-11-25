@@ -21,7 +21,7 @@ class DumbDenseNet(BaseModelWrapper):
         ])
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
-                      metrics=[self.metric])
+                      metrics=[self.config['metric_fn']])
         self.model = model
         self.logger.debug(self.summary())
 

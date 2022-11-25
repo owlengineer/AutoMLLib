@@ -2,6 +2,8 @@ import logging
 import importlib
 
 from abc import abstractmethod
+from ..utils import merge_dicts
+from keras.metrics import Accuracy
 
 
 class BaseModelWrapper:
@@ -9,9 +11,8 @@ class BaseModelWrapper:
 
     def __init__(self,
                  params: dict):
-        self.config = params
         self.model = None
-        self._init_metric()
+        self._init_config(params)
         self._init_logger()
         self._init_model()
 
@@ -20,9 +21,16 @@ class BaseModelWrapper:
         """saves model Python-object into self.model"""
         pass
 
-    def _init_metric(self):
-        """init metric function"""
-        self.metric = self.config['metric_fn']
+    def _init_config(self, params):
+        """init model config"""
+        self.config = {
+            'metric_fn': Accuracy(),
+            'epochs': 20,
+            'batch_size': 64,
+            'validation_split': 0.2,
+            'input_shape': (100,)
+        }
+        merge_dicts(self.config, params)
 
     def _init_logger(self):
         self.logger = logging.getLogger(__name__)
