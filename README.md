@@ -1,6 +1,6 @@
 # AutoMLLib
 
-Binary Classification solutions library, API contains table data processing methods.
+Binary Classification solutions library, API allows you choose model you want to train and as a result returns trained model with best .
 
 ## install (Linux)
 

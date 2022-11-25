@@ -1,14 +1,16 @@
 [tool.poetry]
 name = "automllib"
-version = "0.0.1"
+version = "0.0.2"
 description = "Binary Classification solutions provider"
 authors = ["Gosudarkin Yaroslav <gosudarkin.yaroslav@gmail.com>"]
 readme = "README.md"
 packages = [{include = "automllib", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.11"
 numpy = "^1.23.0"
+tensorflow = "^2.11.0"
+keras = "^2.11.0"
 
 [tool.poetry.group.test.dependencies]
 binaryornot = "^0.4"
