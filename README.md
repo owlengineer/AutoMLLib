@@ -4,10 +4,9 @@
 
 ## install (Linux)
 
-Add to your project (Poetry):
+Установка в venv (Poetry):
 ```commandline
-cd <your_project_foldier>
-poetry add git+ssh://git@github.com:owlengineer/AutoMLLib.git
+(venv) $ poetry add git+ssh://git@github.com:owlengineer/AutoMLLib.git
 ```
 
 ## Usage
