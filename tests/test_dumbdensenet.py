@@ -1,5 +1,4 @@
-from src.automllib.models.DumbDenseNet import DumbDenseNet
-from src.automllib.models.BaseModelWrapper import BaseModelWrapper
+from src.automllib.classifiers.DumbDenseNet import DumbDenseNet
 from keras.metrics import Accuracy
 from keras.datasets import imdb
 
@@ -51,6 +50,6 @@ def test_ddn_imdb_train():
     y_train = np.asarray(train_labels).astype('float32')
     y_test = np.asarray(test_labels).astype('float32')
 
-    m, res = net.get_best_model(x_train, y_train, x_test, y_test)
+    m = net.train(x_train, y_train)
 
     assert type(m) == K.models.Sequential
