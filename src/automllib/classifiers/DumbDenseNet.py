@@ -6,6 +6,8 @@ from keras.callbacks import EarlyStopping
 from keras.metrics import Accuracy
 from ..utils import merge_dicts
 
+import random
+
 
 class DumbDenseNet(BaseModelWrapper):
     """Dense layered net for bin classification"""
@@ -27,16 +29,24 @@ class DumbDenseNet(BaseModelWrapper):
         self.model = model
         self.logger.debug(self.summary())
 
-    def _init_config(self, params):
-        """init model config"""
-        self.config = {
-            'metric_fn': Accuracy(),
+    def _init_default_config(self):
+        self.default_config = {
+            'metric_fn': Accuracy(name="accuracy"),
             'epochs': 20,
             'batch_size': 64,
             'validation_split': 0.2,
             'input_shape': (100,)
         }
-        merge_dicts(self.config, params)
+
+    def _init_config(self, params):
+        merge_dicts(self.default_config, params)
+        self.config = self.default_config
+
+    def randomize_params(self, factor: int = 1):
+        self.config['epochs'] = random.randrange(int(self.default_config['epochs']/factor),
+                                                 self.default_config['epochs']*2)
+        self.config['batch_size'] = random.choice([int(self.default_config['batch_size']/factor),
+                                                   self.default_config['batch_size']*2])
 
     def summary(self):
         stringlist = []
@@ -44,7 +54,7 @@ class DumbDenseNet(BaseModelWrapper):
         short_model_summary = "\n".join(stringlist)
         return short_model_summary
 
-    def get_best_model(self, x_train, y_train, x_test, y_test):
+    def train(self, x_train, y_train):
         """returns best weighted model and metric eval, test/train data need to be prepared (vectorising)"""
         early_stopping_monitor = EarlyStopping(
             monitor='val_loss',  # TODO прописать мониторинг по test выборке вместо val
@@ -62,4 +72,8 @@ class DumbDenseNet(BaseModelWrapper):
                        validation_split=self.config['validation_split'],
                        callbacks=[early_stopping_monitor],
                        verbose=0)
-        return self.model, self.model.evaluate(x_test, y_test)[1]
+        self.config = self.default_config
+        return self.model
+
+    def predict(self, x_test, y_test):
+        return self.model.evaluate(x_test, y_test)[1]

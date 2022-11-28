@@ -11,6 +11,7 @@ class BaseModelWrapper:
                  params: dict):
         self.model = None
         self.config = None
+        self._init_default_config()
         self._init_config(params)
         self._init_logger()
         self._init_model()
@@ -21,12 +22,23 @@ class BaseModelWrapper:
         pass
 
     @abstractmethod
+    def _init_default_config(self):
+        """returns default configurations dict() """
+        pass
+
+    @abstractmethod
     def _init_config(self, params):
         """init model config"""
         pass
 
     def _init_logger(self):
         self.logger = logging.getLogger(__name__)
+
+    # ToDo в этот proof of concept можно добавить больше интерактива -- например, словарь параметр-коэффициент
+    @abstractmethod
+    def _randomize_params(self, factor: int = 1):
+        """randomize hyperparams of model by factor. How factor forces on params -- implemented in models classes"""
+        pass
 
     @property
     def get_model(self):
@@ -38,6 +50,11 @@ class BaseModelWrapper:
         pass
 
     @abstractmethod
-    def get_best_model(self, x_train, y_train, x_test, y_test):
+    def train(self, x_train, y_train):
         """returns best state of current model by training on given data"""
+        pass
+
+    @abstractmethod
+    def predict(self, x_test, y_test):
+        """returns prediction for given data"""
         pass
